@@ -1,0 +1,128 @@
+/* Premium Music Hub */
+.premium-panel {
+    position: fixed;
+    top: 100px;
+    right: 30px;
+    width: 380px; /* Más estrecho por petición del usuario */
+    max-width: 90vw;
+    background: rgba(11, 15, 26, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    z-index: 10000;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    display: none;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.premium-panel .hub-header {
+    background: rgba(255,255,255,0.03);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    cursor: move;
+}
+
+.premium-panel .hub-title {
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.premium-panel .hub-controls {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.premium-panel .hub-controls button {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.premium-panel .hub-controls button:hover {
+    background: var(--primary-color);
+}
+
+/* El cuerpo del player se mantiene alto */
+#player-view {
+    height: 600px !important; /* Más alto para compensar lo estrecho */
+}
+
+.premium-panel.minimized {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50%;
+    top: 160px !important;
+    right: 30px !important;
+    left: auto !important;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 0 30px var(--primary-color);
+    border-color: var(--primary-color);
+    animation: bubblePulse 2s infinite;
+}
+
+@keyframes bubblePulse {
+    0% { box-shadow: 0 0 10px var(--primary-color); }
+    50% { box-shadow: 0 0 30px var(--primary-color); }
+    100% { box-shadow: 0 0 10px var(--primary-color); }
+}
+
+.premium-panel.minimized .hub-header,
+.premium-panel.minimized .hub-body {
+    display: none;
+}
+
+.premium-panel.minimized::before {
+    content: '🎵';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 1.5rem;
+}
+
+.premium-panel.minimized:hover {
+    transform: scale(1.1);
+}
+
+/* =========================================
+   RESPONSIVIDAD DEL PLAYER
+   ========================================= */
+@media (max-width: 768px) {
+    .premium-panel {
+        width: calc(100% - 30px);
+        left: 15px;
+        right: 15px;
+        top: 80px;
+    }
+
+    #player-view {
+        height: 450px !important;
+    }
+
+    .premium-panel.minimized {
+        width: 50px !important;
+        height: 50px !important;
+        top: 140px !important;
+        right: 20px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #player-view {
+        height: 400px !important;
+    }
+}

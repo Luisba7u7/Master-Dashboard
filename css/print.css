@@ -1,0 +1,21 @@
+/* =========================================
+   ESTILOS DE IMPRESIÓN — SOLO APUNTES
+   ========================================= */
+@media print {
+    /* Ocultar TODO */
+    body > * { display: none !important; }
+
+    /* Mostrar solo el contenedor de apuntes */
+    #print-notes-wrapper {
+        display: block !important;
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+        color: #111;
+        background: white;
+    }
+
+    @page {
+        margin: 0;
+        size: A4;
+    }
+}
