@@ -1,0 +1,95 @@
+.markdown-body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    line-height: 1.8; /* Más espaciado entre líneas */
+    font-size: 1.05rem;
+}
+
+.markdown-body h1 {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+.markdown-body h2 {
+    font-size: 2rem;
+    margin-top: 3.5rem; /* Más espacio antes de cada nivel */
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.markdown-body h3 {
+    font-size: 1.4rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.markdown-body p {
+    margin-bottom: 1.5rem; /* Más espacio entre párrafos */
+}
+
+.markdown-body ul, .markdown-body ol {
+    margin-bottom: 1.8rem;
+    padding-left: 2rem;
+}
+
+.markdown-body li {
+    margin-bottom: 0.8rem;
+}
+
+.markdown-body hr {
+    margin: 4rem 0;
+    border-color: var(--border-color);
+}
+
+/* Checkbox de Seguimiento en MD */
+.md-tracker {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.md-check {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.md-check:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.md-check:checked + span {
+    color: var(--primary-color);
+}
+
+/* Flecha de Posición Precisa */
+.pos-arrow {
+    font-size: 1.5rem;
+    animation: bounceX 1s infinite alternate;
+    margin-left: 10px;
+    cursor: pointer;
+    display: none; /* Se activa cuando el checkbox está ON */
+}
+
+.md-tracker.unlocked .pos-arrow {
+    display: inline-block;
+}
+
+@keyframes bounceX {
+    from { transform: translateX(0); }
+    to { transform: translateX(10px); }
+}

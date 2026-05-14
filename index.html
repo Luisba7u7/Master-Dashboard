@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Dashboard | Full Stack</title>
+    <link rel="shortcut icon" href="https://images.icon-icons.com/3002/PNG/512/book_icon_188101.png" type="image/x-icon">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/markdown.css">
+    <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/print.css">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <!-- EmailJS SDK para Notificaciones -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Pantalla de Login de Alta Seguridad -->
+    <div id="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 10000; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s;">
+        <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(14, 165, 233, 0.2); padding: 3rem; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; backdrop-filter: blur(10px);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+            <h1 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">MASTER LOGIN</h1>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 2rem;">Acceso restringido para devbernix</p>
+            
+            <input type="email" id="login-email" placeholder="Correo Electrónico" style="width: 100%; background: #0f172a; border: 1px solid #1e293b; padding: 1rem; border-radius: 12px; color: white; margin-bottom: 1rem; outline: none; display: block; width: 100%;">
+            <input type="password" id="login-pass" placeholder="Contraseña" style="width: 100%; background: #0f172a; border: 1px solid #1e293b; padding: 1rem; border-radius: 12px; color: white; margin-bottom: 1.5rem; outline: none; display: block; width: 100%;">
+            
+            <button id="do-login" style="width: 100%; background: #0ea5e9; color: white; border: none; padding: 1rem; border-radius: 12px; font-weight: 800; cursor: pointer; transition: transform 0.2s; margin-bottom: 1rem;">
+                INICIAR SESIÓN CON CORREO
+            </button>
+
+            <div style="margin: 0.5rem 0; display: flex; align-items: center; gap: 10px; color: #475569;">
+                <div style="flex:1; height:1px; background: #1e293b;"></div>
+                <span style="font-size: 0.65rem; font-weight: 800; color: #64748b;">O</span>
+                <div style="flex:1; height:1px; background: #1e293b;"></div>
+            </div>
+
+            <button id="google-login" style="width: 100%; background: white; color: #1f2937; border: none; padding: 1rem; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s; margin-top: 1rem;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+                CONTINUAR CON GOOGLE
+            </button>
+            <div id="auth-error" style="color: #ef4444; font-size: 0.75rem; margin-top: 1rem; display: none;">Error de autenticación.</div>
+        </div>
+    </div>
+
+    <div id="app" style="display: none;">
+        <!-- Mobile Header -->
+        <header class="mobile-header mobile-only">
+            <button id="mobile-menu-btn">☰</button>
+            <div class="brand">MASTER DASHBOARD</div>
+            <div style="width: 40px;"></div> <!-- Spacer to center title -->
+        </header>
+
+        <!-- Sidebar -->
+        <aside>
+            <div class="brand-wrapper desktop-only">
+                <div class="brand">MASTER DASHBOARD</div>
+            </div>
+            
+            <input type="text" class="search-box" id="search" placeholder="Buscar materia...">
+            <nav id="sidebar-nav"></nav>
+        </aside>
+
+        <!-- Content -->
+        <div id="main-wrapper">
+            <header class="tab-bar">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="reading">Lectura</button>
+                    <button class="tab-btn" data-tab="playground">Playground</button>
+                    <button class="tab-btn" data-tab="stats">Estadísticas</button>
+                    <button class="tab-btn" data-tab="notes">Apuntes</button>
+                </div>
+                <div class="utility">
+                    <button class="icon-btn" id="toggle-music" title="Reproductor Flotante">🎵</button>
+                    <button class="icon-btn" id="toggle-focus">👁️</button>
+                    <button class="icon-btn" onclick="logout()" title="Cerrar Sesión">🚪</button>
+                </div>
+            </header>
+
+            <main id="main-view">
+                <!-- Reading -->
+                <section id="view-reading" class="view active">
+                    <div id="highlighter-tools">
+                        <div class="color-picker">
+                            <button class="color-btn active" data-color="yellow" style="background: #fbbf24;"></button>
+                            <button class="color-btn" data-color="green" style="background: #34d399;"></button>
+                            <button class="color-btn" data-color="blue" style="background: #38bdf8;"></button>
+                            <button class="color-btn" data-color="pink" style="background: #f472b6;"></button>
+                        </div>
+                        <div class="tools-group" style="display: flex; gap: 0.5rem;">
+                            <button class="icon-btn" id="toggle-marker" title="Lápiz">🖍️</button>
+                            <button class="icon-btn" id="toggle-eraser" title="Borrador">🧼</button>
+                        </div>
+                    </div>
+                    <div id="content-viewer" class="markdown-body"></div>
+                </section>
+
+                <!-- Playground -->
+                <section id="view-playground" class="view">
+                    <div class="playground-layout">
+                        <div class="editor-side">
+                            <div class="editor-header">
+                                <span>JS PLAYGROUND</span>
+                                <button id="run-code">RUN ▶️</button>
+                            </div>
+                            <div class="editor-container" style="display: flex; flex-grow: 1; background: rgba(0,0,0,0.2); border-radius: 0 0 12px 12px; overflow: hidden; position: relative;">
+                                <div id="line-numbers" style="width: 40px; padding: 1.5rem 0.5rem; background: rgba(0,0,0,0.3); color: #475569; text-align: right; font-family: 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.6; user-select: none; border-right: 1px solid rgba(255,255,255,0.05); overflow: hidden;">1</div>
+                                <textarea id="code-editor" spellcheck="false" placeholder="// Escribe tu código aquí..." style="flex-grow: 1; background: transparent; border: none; color: #e2e8f0; padding: 1.5rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; resize: none; outline: none; line-height: 1.6; white-space: pre; overflow: auto;"></textarea>
+                            </div>
+                        </div>
+                        <div class="output-side" id="console-output">
+                            > La consola aparecerá aquí...
+                        </div>
+                    </div>
+                    <iframe id="playground-iframe" style="display:none;"></iframe>
+                </section>
+
+                <!-- Stats -->
+                <section id="view-stats" class="view">
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">RACHA DE ESTUDIO 🔥</h3>
+                            <div id="streak-heatmap" style="display:flex; gap: 8px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.2); padding: 2rem; border-radius: 15px;"></div>
+                            <p id="streak-text" style="margin-top: 1.5rem; font-weight: 800; font-size: 1.2rem; text-align: center;"></p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 style="margin-bottom: 1.5rem; color: var(--accent-color);">CONEXIONES TÉCNICAS 🕸️</h3>
+                            <div id="knowledge-graph" style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 15px; overflow: auto; min-height: 300px; max-height: 70vh;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notes -->
+                <section id="view-notes" class="view">
+                    <div class="notes-layout" style="height: calc(100vh - 200px); display: flex; gap: 1.5rem;">
+                        <!-- Sidebar de Notas -->
+                        <div class="notes-sidebar" style="width: 300px; display: flex; flex-direction: column; gap: 1rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 20px; border: 1px solid var(--border-color);">
+                            <div style="font-weight: 800; color: var(--primary-color); font-size: 0.9rem; letter-spacing: 0.1em;">MIS APUNTES</div>
+                            <input type="text" id="search-notes" placeholder="Buscar nota..." style="background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.5rem 1rem; color: white; outline: none; font-size: 0.85rem;">
+                            <div id="notes-list" style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <!-- Se llenará dinámicamente -->
+                            </div>
+                        </div>
+                        
+                        <!-- Editor de Notas -->
+                        <div class="notes-main" style="flex-grow: 1; display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display:flex; justify-content: space-between; align-items: center;">
+                                <h2 id="current-note-title" style="font-size: 1.1rem; color: var(--text-muted);">Selecciona una nota para editar</h2>
+                                <div style="display:flex; gap: 1rem; align-items: center;">
+                                    <button class="tab-btn" id="toggle-history" style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted);">VER HISTORIAL 📜</button>
+                                    <button class="tab-btn" id="export-pdf" style="background:var(--accent-color); padding: 0.5rem 1rem; font-size: 0.8rem;">EXPORTAR PDF 📄</button>
+                                </div>
+                            </div>
+                            <textarea id="notes-editor" placeholder="Empieza a escribir tus apuntes aquí..." style="flex-grow: 1; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 20px; color: white; padding: 2rem; font-size: 1.1rem; resize: none; outline: none;"></textarea>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Premium Music Hub -->
+    <div id="music-hub" class="premium-panel">
+        <div class="hub-header" id="hub-drag-handle">
+            <div class="hub-title">
+                <span class="pulse-icon">●</span>
+                MUSIC HUB
+            </div>
+            <div class="hub-controls">
+                <button id="minimize-hub" title="Minimizar">−</button>
+                <button id="close-hub" title="Cerrar">×</button>
+            </div>
+        </div>
+        
+        <div class="hub-body" style="padding: 0;">
+            <!-- Player Container (Direct Soundfly Interface) -->
+            <div id="player-view" style="height: 550px; border-radius: 0; border: none;">
+                <div id="player-placeholder" style="display:none;">
+                    <div class="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+                <!-- Para Radios (Audio Puro) -->
+                <audio id="audio-player" style="display:none;" controls></audio>
+                <!-- Ventana Principal de Soundfly -->
+                <div id="actual-player" style="height: 100%;">
+                    <iframe src="https://soundfly.es/" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="menu-overlay"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script type="module" src="js/script.js"></script>
+</body>
+</html>
