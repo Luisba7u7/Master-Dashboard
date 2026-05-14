@@ -18,6 +18,8 @@ jobs:
         run: |
           mkdir -p js
           printf "%s" "${{ secrets.FIREBASE_CONFIG_CONTENT }}" > js/config.js
+          # Quitar la regla de ignore para que el archivo temporal se pueda subir a gh-pages
+          sed -i '/js\/config\.js/d' .gitignore
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
