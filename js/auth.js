@@ -17,15 +17,25 @@ const authError = document.getElementById('auth-error');
 // Escuchar cambios de sesión
 auth.onAuthStateChanged(user => {
     if (user) {
-        authOverlay.style.opacity = '0';
-        setTimeout(() => {
-            authOverlay.style.display = 'none';
-            appContainer.style.display = 'flex';
-            window.dispatchEvent(new Event('auth-ready'));
-        }, 500);
+        // Verificar identidad antes de mostrar nada
+        if (user.email === MASTER_EMAIL) {
+            authOverlay.style.opacity = '0';
+            setTimeout(() => {
+                authOverlay.style.display = 'none';
+                // Usamos removeProperty para quitar el !important
+                appContainer.style.setProperty('display', 'flex', 'important');
+                window.dispatchEvent(new Event('auth-ready'));
+            }, 300);
+        } else {
+            // Intruso detectado: Bloqueo inmediato
+            authError.style.display = 'block';
+            authError.innerText = "ACCESO DENEGADO";
+            sendIntruderAlert(user.email);
+            auth.signOut();
+        }
     } else {
         authOverlay.style.display = 'flex';
-        appContainer.style.display = 'none';
+        appContainer.style.setProperty('display', 'none', 'important');
     }
 });
 
