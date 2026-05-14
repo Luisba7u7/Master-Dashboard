@@ -16,12 +16,43 @@
     <link rel="stylesheet" href="css/player.css">
     <link rel="stylesheet" href="css/print.css">
     
-    <!-- Libs -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <!-- EmailJS SDK para Notificaciones -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
-    <div id="app">
+    <!-- Pantalla de Login de Alta Seguridad -->
+    <div id="auth-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 10000; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s;">
+        <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(14, 165, 233, 0.2); padding: 3rem; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; backdrop-filter: blur(10px);">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔐</div>
+            <h1 style="color: white; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">MASTER LOGIN</h1>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 2rem;">Acceso restringido para devbernix</p>
+            
+            <input type="email" id="login-email" placeholder="Correo Electrónico" style="width: 100%; background: #0f172a; border: 1px solid #1e293b; padding: 1rem; border-radius: 12px; color: white; margin-bottom: 1rem; outline: none; display: block; width: 100%;">
+            <input type="password" id="login-pass" placeholder="Contraseña" style="width: 100%; background: #0f172a; border: 1px solid #1e293b; padding: 1rem; border-radius: 12px; color: white; margin-bottom: 1.5rem; outline: none; display: block; width: 100%;">
+            
+            <button id="do-login" style="width: 100%; background: #0ea5e9; color: white; border: none; padding: 1rem; border-radius: 12px; font-weight: 800; cursor: pointer; transition: transform 0.2s; margin-bottom: 1rem;">
+                INICIAR SESIÓN CON CORREO
+            </button>
+
+            <div style="margin: 0.5rem 0; display: flex; align-items: center; gap: 10px; color: #475569;">
+                <div style="flex:1; height:1px; background: #1e293b;"></div>
+                <span style="font-size: 0.65rem; font-weight: 800; color: #64748b;">O</span>
+                <div style="flex:1; height:1px; background: #1e293b;"></div>
+            </div>
+
+            <button id="google-login" style="width: 100%; background: white; color: #1f2937; border: none; padding: 1rem; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s; margin-top: 1rem;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+                CONTINUAR CON GOOGLE
+            </button>
+            <div id="auth-error" style="color: #ef4444; font-size: 0.75rem; margin-top: 1rem; display: none;">Error de autenticación.</div>
+        </div>
+    </div>
+
+    <div id="app" style="display: none;">
         <!-- Mobile Header -->
         <header class="mobile-header mobile-only">
             <button id="mobile-menu-btn">☰</button>
@@ -51,6 +82,7 @@
                 <div class="utility">
                     <button class="icon-btn" id="toggle-music" title="Reproductor Flotante">🎵</button>
                     <button class="icon-btn" id="toggle-focus">👁️</button>
+                    <button class="icon-btn" onclick="logout()" title="Cerrar Sesión">🚪</button>
                 </div>
             </header>
 
@@ -177,6 +209,8 @@
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script type="module" src="js/script.js"></script>
 </body>
 </html>

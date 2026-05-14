@@ -893,4 +893,5 @@ function updateNotesList(query = '') {
     }
 }
 
-init();
+// Esperar a que el sistema de seguridad autorice el acceso
+window.addEventListener('auth-ready', init);
