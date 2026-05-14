@@ -15,9 +15,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Inject Configuration
+        env:
+          CONFIG_SECRET: ${{ secrets.FIREBASE_CONFIG_CONTENT }}
         run: |
           mkdir -p js
-          printf "%s" "${{ secrets.FIREBASE_CONFIG_CONTENT }}" > js/config.js
+          echo "$CONFIG_SECRET" > js/config.js
           # Quitar la regla de ignore para que el archivo temporal se pueda subir a gh-pages
           sed -i '/js\/config\.js/d' .gitignore
 
